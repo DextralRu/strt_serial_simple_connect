@@ -17,10 +17,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    packet.cpp
 
 HEADERS += \
-    mainwindow.h
+    enums-client.h \
+    mainwindow.h \
+    packet.h
 
 FORMS += \
     mainwindow.ui

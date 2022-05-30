@@ -60,7 +60,6 @@ void MainWindow::fillPortInfo()
         ui->descriptionLabel->setText(ui->descriptionLabel->text().split(':').first() + QString(": %1").arg(list.count() > 1 ? list.at(1) : tr(blankString)));
         ui->manufacturerLabel->setText(ui->manufacturerLabel->text().split(':').first() + QString(": %1").arg(list.count() > 2 ? list.at(2) : tr(blankString)));
     }
-
 }
 
 void MainWindow::on_connectButton_clicked()
@@ -86,5 +85,7 @@ void MainWindow::on_connectButton_clicked()
 void MainWindow::read_Serial()
 {
     rData->append(serial->readAll());
+    serial->clear();
     qDebug() << rData->toHex();
+    rData->clear();
 }
