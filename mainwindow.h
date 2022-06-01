@@ -19,6 +19,7 @@ public:
 private slots:
     void showPortInfo(int);
     void fillPortInfo(void);
+    void connectPort(void);
 
     void on_connectButton_clicked();
     void read_Serial();

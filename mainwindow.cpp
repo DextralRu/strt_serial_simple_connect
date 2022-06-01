@@ -2,6 +2,8 @@
 #include "ui_mainwindow.h"
 #include <QDebug>
 
+#include "packet.h"
+
 static const char blankString[] = "N/A";
 
 MainWindow::MainWindow(QWidget *parent)
@@ -21,6 +23,7 @@ MainWindow::MainWindow(QWidget *parent)
 
    fillPortInfo();
 
+
  }
 
 MainWindow::~MainWindow()
@@ -37,6 +40,7 @@ void MainWindow::showPortInfo(int idx)
     ui->descriptionLabel->setText(ui->descriptionLabel->text().split(':').first() + QString(": %1").arg(list.count() > 1 ? list.at(1) : tr(blankString)));
     ui->manufacturerLabel->setText(ui->manufacturerLabel->text().split(':').first() + QString(": %1").arg(list.count() > 2 ? list.at(2) : tr(blankString)));
     serialPortName = ui->SerialPortComboBox->currentText();
+    connectPort();
 }
 
 void MainWindow::fillPortInfo()
@@ -62,7 +66,7 @@ void MainWindow::fillPortInfo()
     }
 }
 
-void MainWindow::on_connectButton_clicked()
+void MainWindow::connectPort()
 {
     serial->setPortName(serialPortName);
     qDebug() << serialPortName;
@@ -73,13 +77,17 @@ void MainWindow::on_connectButton_clicked()
     serial->setFlowControl(QSerialPort::NoFlowControl);
     serial->open(QIODevice::ReadWrite);
     ui->statusbar->showMessage(QString("Статус: ПОРТ %1").arg(serial->isOpen()?"ОТКРЫТ":"ЗАКРЫТ"));
-    QByteArray cmd;
-    cmd.append(0xBB);
-    cmd.append(0xBB);
-    cmd.append(0xBB);
-    cmd.append(0x01);
-    cmd.append(0xFF);
-    serial->write(cmd);
+}
+
+void MainWindow::on_connectButton_clicked()
+{
+    BLE::Packet *command = nullptr;
+    command = new BLE::PacketPollUSB();
+    if(command)
+    {
+        serial->write(((BLE::PacketOutgoing*)command)->data());
+        qDebug() << "SEND: " << ((BLE::PacketOutgoing*)command)->data().toHex();
+    }
 }
 
 void MainWindow::read_Serial()
